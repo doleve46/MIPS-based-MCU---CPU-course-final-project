@@ -38,13 +38,14 @@
 
 
 <!-- TABLE OF CONTENTS -->
-  <summary>Table of Contents</summary>
+
+  <strong>Table of Contents</strong>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
-		<li><a href="#built-with">Project Requirements</a></li>
+		<li><a href="#project-requirements">Project Requirements</a></li>
       </ul>
     </li>
     <li>
@@ -61,6 +62,7 @@
   </ol>
 
 
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -69,7 +71,7 @@ This is a project that was given as a final assignment in a course, as detailed 
 The project was made to be synthesized on top of an Altera Cyclone V FPGA board, and was tested in real time as part of the project's requirements.
 The project was done in pairs, and was done by myself (Dolev Eisenberg) and Amir Aboutboul.
 <br />
-Further information is under <a href="contact">'Contact'</a>.
+Further information is under the 'Contact' section.
 <br />
 The files are catagorized, with VHDL files within 'DUT', TB and Waveform configuration for ModelSim within 'Simulation Files',
 and all files relevant for synthesis within 'Quartus'.
@@ -90,9 +92,9 @@ This took about 1.5 weeks of work at the end of the semester's exams, and due to
 
 ## Project Requirements
 As this was a project given as a concluding assignment in a University course, the definition of the project and the material given are detailed below.
-
-<strong>Project Requirements:</strong>
-<br /><details>
+<details>
+<summary><strong>Project Requirements:</strong></summary>
+<br />
 <ul><li>Add support to a list of 23 instructions, using standard MIPS instruction format. This includes adding and defining the control lines within the CPU to support needed functionality. </li>
 <li>Implement GPIO support to the physical keys and displays of the Altera cyclone V FPGA board. Keys and switches to be used as input only, while LEDs and HEX displays as output only. </li>
 <li> Implement external Timer and Divider modules, that can be manually configured by the user by using lw/sw instructions to pre-defined memory addresses. 
@@ -105,16 +107,18 @@ As this was a project given as a concluding assignment in a University course, t
 </ul>
 <li>Simulate the design using ModelSim, creating a testbench with detailed and easy-to-read Waveform Diagram,
 and then using Quartus synthesize the design and run it on the Cyclone V board.</li>
-</ul></details>
+</ul>
+</details>
 <br />
+<details>
+<summary><strong>Material Given:</strong></summary>
 
-<strong>Material Given:</strong>
-<br /><details>
+<br />
 We were given a bare-bones template for a single-cycle MIPS CPU core, usually used as a base to create a pipelined version of MIPS (that was excluded off this year's syllabus), hence
 it was split into 5 different files - Fetch, Decode, Execute, Dmemory & Control.
 <br />
-We were also given a basic TB template, to ease the work needed.</details>
-
+We were also given a basic TB template, to ease the work needed.
+</details>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -123,11 +127,12 @@ We were also given a basic TB template, to ease the work needed.</details>
 In this section we'll detail in full the design of each module within the MCU, and provide some future additions and changes that can be made to improve upon the work.
 
 This is a simplified diagram of the entire design:
+
 ![Total system diagram](https://github.com/user-attachments/assets/fb7f44e7-5fd5-4be2-90db-180936ebbec9)
 
 ### CPU Core
 The "heart" of the project was the single-cycle, MIPS-based CPU with Harvard architecture design, that needed to support a total of 23 different instructions, as followed:
-<ul><details>
+<ul>
 	<li>Arithmatic instructions</li>
 		<ul>
 			<li>add </li>
@@ -165,7 +170,7 @@ The "heart" of the project was the single-cycle, MIPS-based CPU with Harvard arc
 			<li>Jump and link</li>
 		</ul>
 </ul>
-</details>
+
 As we were given a bare-bones template for the CPU, we started off by planning all neccessary hardware and control lines needed to obtain the needed functionality:
 
 ![Updated MIPS Arch](https://github.com/user-attachments/assets/bfe5ebea-6ded-4454-b8bf-c7f32352f87a)
@@ -178,7 +183,7 @@ Followed by assigning a value for the control lines of each instruction.
 <br />
 To support interrupt servicing, the control unit of the CPU contains a simple FSM to distinguish the different stages of servicing an interrupt.
 <br />
-Further details regarding interrupt servicing is found under the <a href="interrupt_controller">'Interrupt Controller'</a> section.
+Further details regarding interrupt servicing is found under the 'Interrupt Controller' section.
 
 <strong>Regarding memory</strong>, the system has a seperate Instruction memory and Data memory (Harvard architecture).
 <br />
@@ -211,7 +216,7 @@ To properly display the hexadecimal values onto the Hex display, we decoded the 
 
 ### Divider
 The divider module serves as an external hardware accelerator for the division operation. <br />
-Given a Divisor and Dividend, loaded to their respective registers (as described within the <a href="GPIO">'GPIO'</a> section).
+Given a Divisor and Dividend, loaded to their respective registers (as described within the 'GPIO' section).
 <br />
 a standard shift-register based division is performed. To speed the process up, a different clock is used for this part of the MCU. Upon synthesis, we used a clock
  x4 times faster than the MCLK. <br />
@@ -251,7 +256,7 @@ Once an interrupt request is sent to the CPU, upon the next rising edge the CPU 
 <br />
 Following these 2 cycles, the CPU now executes the handler for the interrupt request with the highest priority.
 <br />
-<br />
+
 <em>NOTE:</em> The reset interrupt over-rides every other interrupt, including mid-service, and resets the PC back to 0 without saving the next PC to the RF. The Control unit is responsible 
 for distributing the reset line to the whole MCU, which happens on the next rising edge of the MCLK.
 
@@ -261,7 +266,6 @@ for distributing the reset line to the whole MCU, which happens on the next risi
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-TO BE CHANGED TO SOMETHING ELSE (HARDWARE?)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
