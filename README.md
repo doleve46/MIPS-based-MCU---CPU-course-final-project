@@ -8,17 +8,6 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-
 <div align="center">
 
 
@@ -107,6 +96,7 @@ As this was a project given as a concluding assignment in a University course, t
 </ul>
 <li>Simulate the design using ModelSim, creating a testbench with detailed and easy-to-read Waveform Diagram,
 and then using Quartus synthesize the design and run it on the Cyclone V board.</li>
+<li>The design must run at clock speed of &lt;25Mhz - <em>our design was capped at 28Mhz (synthesis via Quartus)</em></li>
 </ul>
 </details>
 <br />
@@ -128,9 +118,22 @@ In this section we'll detail in full the design of each module within the MCU, a
 
 This is a simplified diagram of the entire design:
 
-![Total system diagram](https://github.com/user-attachments/assets/fb7f44e7-5fd5-4be2-90db-180936ebbec9)
+<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/Total system diagram.png" width="1100" height="421"></a>
+</div>
+
 
 ### CPU Core
+
+<details>
+	<summary>Ins & Outs diagram:</summary>
+	<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/mips core io.png" width="692" height="232"></a>
+</div>
+</details>
+
 The "heart" of the project was the single-cycle, MIPS-based CPU with Harvard architecture design, that needed to support a total of 23 different instructions, as followed:
 <ul>
 	<li>Arithmatic instructions</li>
@@ -170,20 +173,25 @@ The "heart" of the project was the single-cycle, MIPS-based CPU with Harvard arc
 			<li>Jump and link</li>
 		</ul>
 </ul>
-
 As we were given a bare-bones template for the CPU, we started off by planning all neccessary hardware and control lines needed to obtain the needed functionality:
 
-![Updated MIPS Arch](https://github.com/user-attachments/assets/bfe5ebea-6ded-4454-b8bf-c7f32352f87a)
+<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/Updated MIPS Arch..png" width="852" height="470"></a>
+</div>
 
 <br />
 Followed by assigning a value for the control lines of each instruction.
 
-![Instruction decoding](https://github.com/user-attachments/assets/328072ba-2287-41ad-88df-a8575405fb67)
+<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/Instruction decoding.png" width="1396" height="426"></a>
+</div>
 
 <br />
 To support interrupt servicing, the control unit of the CPU contains a simple FSM to distinguish the different stages of servicing an interrupt.
 <br />
-Further details regarding interrupt servicing is found under the 'Interrupt Controller' section.
+Further details regarding interrupt servicing is found under the <a href="#interrupt-controller">Interrupt Controller</a> section.
 
 <strong>Regarding memory</strong>, the system has a seperate Instruction memory and Data memory (Harvard architecture).
 <br />
@@ -201,12 +209,20 @@ Some of the registers have pre-defined usage (as instructed in the project defin
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### GPIO
+<a id="GPIO"></a>
+<details>
+	<summary>Ins & Outs diagram:</summary>
+	<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/gpio io.png" width="690" height="229"></a>
+</div>
+</details>
 As defined by the course's instructor, we were tasked to use the 4 physical keys (numbered 0 to 3) and 8 switches on-board the Cyclone V board as input only, with Key 0 as a synchronous reset key,
 and the rest 3 keys causing normal interrupts with handlers defined by the user (as assembly code stored within the instruction memory).
 <br />
 For output, the 4 Hex displays and LEDs are used.
 <br />
-<strong>Interating with the GPIO &amp; other external units </strong> are done via load word and store word instruction with pre-defined 'virtual' data memory addresses. 
+<strong><ins>Interacting with the GPIO &amp; other external units </ins></strong> is done via load word and store word instruction with pre-defined 'virtual' data memory addresses. 
 All external modules actively listen to the signal line holding potential addresses (regarded as Address Bus); once an adress connected to a specific module is spotted, 
 and the control bits for either reading or writing are on, the relevant unit loads/stores the information that is on the Data Bus - 32 bit bus that connects all external 
 modules with the Data memory within the CPU, as shown in the system diagram at the start of the section.
@@ -215,8 +231,15 @@ To properly display the hexadecimal values onto the Hex display, we decoded the 
 <br />
 
 ### Divider
+<details>
+	<summary>Ins & Outs diagram:</summary>
+	<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/divider io.png" width="620" height="275"></a>
+</div>
+</details>
 The divider module serves as an external hardware accelerator for the division operation. <br />
-Given a Divisor and Dividend, loaded to their respective registers (as described within the 'GPIO' section).
+Given a Divisor and Dividend, loaded to their respective registers (as described within <a href="#gpio">GPIO</a>).
 <br />
 a standard shift-register based division is performed. To speed the process up, a different clock is used for this part of the MCU. Upon synthesis, we used a clock
  x4 times faster than the MCLK. <br />
@@ -224,19 +247,37 @@ Upon completion, the divider flags an interrupt to the Interrupt Controller modu
 <br />
 
 ### Timer
+<details>
+	<summary>Ins & Outs diagram:</summary>
+	<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/timer io.png" width="693" height="290"></a>
+</div>
+</details>
 A timer module was also required, being used to generate interrupt flags on configurable intervals, by choosing frequency division options and counter overflow settings 
 configured within a designated control register. <br />
 The timer also contains a PWM unit, able to generate a PWM signal onto a pin on the Cyclone V board, with 2 operation modes; The PWM is determined by 2 configurable values used as low-high or the opposite. <br />
 Similar to other external modules, the timer also flags an interrupt upon overflowing the counter as decided by the user.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Interrupt Controller
-
+<a id="interrupt-controller"></a>
+<details>
+	<summary>Ins & Outs diagram:</summary>
+	<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/interrupt controller io.png" width="693" height="307"></a>
+</div>
+</details>
 The interrupt controller is comprised of logic units, one for each interrupt, designed as shown in the diagram below (as requested by the course insturctor), 
 as well as user-configurable registers, IE (interrupt enable register), IFG (interrupt flag register) and Type register, each 8 bits.
 <br />
 
-![interrupt logic](https://github.com/user-attachments/assets/5e2791cb-101e-4c7c-9a6e-7978f973b005)
+<div align="center">
+	<a href=https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project>
+		<img src="images_readme/interrupt%20logic.png" width="418" height="231"></a>
+</div>
 
 The interrupt controller works as followed - whenever at least 1 interrupt source is on and the corresponding enable bit within the IE register is on '1', an interrupt request is sent to the
 CPU's Control unit, while simultaniously the Type register changes its value to a pre-defined value, corresponding to a Data Memory address holding the address for the interrupt handler within the 
@@ -246,17 +287,17 @@ in the Type register when requesting service from the Control unit.
 <br />
 Once an interrupt request is sent to the CPU, upon the next rising edge the CPU does the following:
 <ol><li><strong>On the first cycle:</strong></li>
-<ul><li>placeholder_register &lt;= Next_PC </li>
-<li>r26(0) &lt;= 0 (This resets GIE - General Interrupt Enable bit, and prevent further interrupts)</li></ul>
+<ul><li><code>placeholder_register &lt;= Next_PC </code></li>
+<li><code>r26(0) &lt;= 0</code> (This resets GIE - General Interrupt Enable bit, and prevent further interrupts)</li></ul>
 <li><strong>On the second cycle</strong></li>
-<ul><li>PC &lt;= ITCM[ DTCM[Type] ]</li>
-<li>MemWrite = 0 (prevents writing to memory in case we overrode a store word instruction)</li>
-<li>r27 &lt;= placeholder_register (saves PC to return to to pre-defined register in RF)</li>
-<li> Interrupt_acknowledge = 1 (sent to Interrupt Controller)</li></ul></ol>
+<ul><li><code>PC &lt;= ITCM[ DTCM[Type] ]</code></li>
+<li><code>MemWrite = 0</code> (prevents writing to memory in case we overrode a store word instruction)</li>
+<li><code>r27 &lt;= placeholder_register</code> (saves PC to return to to pre-defined register in RF)</li>
+<li><code>Interrupt_acknowledge = 1</code> (sent to Interrupt Controller)</li></ul></ol>
 <br />
 Following these 2 cycles, the CPU now executes the handler for the interrupt request with the highest priority.
 <br />
-
+<br />
 <em>NOTE:</em> The reset interrupt over-rides every other interrupt, including mid-service, and resets the PC back to 0 without saving the next PC to the RF. The Control unit is responsible 
 for distributing the reset line to the whole MCU, which happens on the next rising edge of the MCLK.
 
@@ -267,14 +308,12 @@ for distributing the reset line to the whole MCU, which happens on the next risi
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Contact
 
 Dolev Eisenberg - [![LinkedIn][linkedin-shield]][linkedin-url1]
+
 Amir Aboutboul - [![LinkedIn][linkedin-shield]][linkedin-url2]
 
 Project Link: [https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project](https://github.com/doleve46/MIPS-based-MCU---CPU-course-final-project)
